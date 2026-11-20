@@ -1,83 +1,268 @@
-# Intergram - [Demo](https://www.intergram.xyz/)
+Проект создан на основе [Intergram](https://github.com/idoco/intergram) и доработан с целью улучшения пользовательского интерфейса, функциональности и удобства использования
 
-A **Free** live chat widget that you can easily add to your website. It will let you chat with your website visitors using your Telegram messenger. 
+# Чат-виджет для Telegram
 
-#### :tada: Main Contributors :tada:
-- [aslauris](https://github.com/aslauris) - Who redesgined the new UI! Check out his website - [wedofe.com](https://www.wedofe.com/)
+Минималистичный виджет обратной связи для сайта с доставкой сообщений и изображений в Telegram. Backend и интерфейс виджета входят в один Node.js-проект.
 
-![](https://user-images.githubusercontent.com/5776439/40442974-c107cb4a-5e79-11e8-8af1-4d2c8be14f48.gif)
+## Возможности
 
-##### How?
-You initiate a chat with my Telegram bot and add 2 lines of script to your website to embed the widget. Visitors' messages are sent from the chat widget to my bot server, which sends them to your Telegram messenger where you can answer them. You can also self-host the bot server to get more control of this process.
+- Текстовый чат между посетителем и оператором
+- Отправка изображений из виджета в Telegram
+- Получение текстовых и фотосообщений от администратора
+- Ответы на конкретного пользователя через Telegram Reply
+- Очередь недоставленных сообщений для посетителя на 24 часа
+- Автоматическое удаление временных файлов через 24 часа
+- Сжатие изображений и создание миниатюр
+- Адаптивный интерфейс для телефона и компьютера
+- Изменяемые размеры чат-окна на компьютере
+- Настраиваемые текст и цвет виджета
+- Docker и Docker Compose для развёртывания
 
-##### Why use a Telegram bot to implement a chat widget?
-By using a Telegram bot, I delegate all the message routing work and chat state management to Telegram. I don't have to build fancy mobile and desktop apps for several platforms because Telegram already has a great multiplatform chat client. And, I can easily handle a huge amount of load, because my app runs completely stateless (No database) and just serves as a pipe between Telegram and the chat widget users.
+Секция старого сервиса, база данных и Telegram chat ID в клиентском коде из исходного проекта не используются.
 
-### Embed Intergram in your website with these 2 simple steps
+## Требования
 
-1. Open [Telegram messenger](https://web.telegram.org/), search for `@Intergram` and hit `/start` to get your unique chat ID. ([direct link](https://web.telegram.org/#/im?p=@IntergramBot))
+- Node.js 20 и новее
+- Telegram-бот, созданный через `@BotFather`
+- Токен бота `TELEGRAM_TOKEN`
+- ID Telegram-чата администратора `INTERGRAM_CHAT_ID`
+- Доступный извне HTTPS-домен для Telegram webhook
 
-  <p align="center"> <img src="docs/bot-start.gif"/> </p>
+## Быстрый запуск
 
-2. Paste this code snippet right before the closing body tag of every page where you want the chat to appear 
-(Don't forget to add your actual chat ID). 
+1. Установите зависимости:
 
-```html
-<script> window.intergramId = "Your unique chat id" </script>
-<script id="intergram" type="text/javascript" src="https://www.intergram.xyz/js/widget.js"></script>
+```bash
+npm install
 ```
 
-*Note: replying to a specific message should be used to respond to that specific visitor. Sending a standard message will broadcast to all connected chat clients (You might find it easier to use if you have only one active conversation)*
+2. Создайте файл `.env` в корне проекта:
 
-**Important Notice:** I plan to keep the hosted chat service 100% free (no ads also!), but there are some hosting expenses (servers, domain, cdn, etc), so I will soon start bundeling a [Loadmill](https://www.loadmill.com) component with the Intergram script. Loadmill is a new concept and still in Beta - **If you don't feel comfortable with this, please use your own self hosted version.**
+```env
+TELEGRAM_TOKEN=1234567890:telegram_bot_token
+INTERGRAM_CHAT_ID=123456789
+PORT=3000
+CERTBOT_RESPONSE=
+```
 
-### Customization - [Try It](https://jsfiddle.net/z9ffzr9n/6/)
-Currently you can customize all visible texts and the main widget color by setting an optional `intergramCustomizations` object in the injection script tag. (All its properties are also optional and will fallback to their original values)
+`INTERGRAM_CHAT_ID` — это числовой ID личного или группового чата Telegram, куда будут приходить сообщения. Указывать этот ID в HTML или JavaScript клиентской страницы не нужно.
+
+3. Соберите статические файлы виджета:
+
+```bash
+npm run build
+```
+
+4. Запустите сервер:
+
+```bash
+npm start
+```
+
+После запуска демонстрационная страница будет доступна по адресу:
+
+```text
+http://localhost:3000/
+```
+
+Для разработки сервер сборки можно запустить отдельно:
+
+```bash
+npm run dev
+```
+
+## Настройка Telegram webhook
+
+После развёртывания укажите Telegram адрес обработчика:
+
+```text
+https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://ваш-домен.example/hook
+```
+
+Замените `<TOKEN>` на реальный токен бота и `https://ваш-домен.example` на публичный HTTPS-адрес вашего сервера.
+
+Проверить текущее подключение webhook можно так:
+
+```text
+https://api.telegram.org/bot<TOKEN>/getWebhookInfo
+```
+
+## Установка виджета на сайт
+
+Вставьте код перед закрывающим тегом `</body>`:
+
 ```html
-<script> 
-    window.intergramId = "Your unique chat id";
-    window.intergramCustomizations = {
-        titleClosed: 'Closed chat title',
-        titleOpen: 'Opened chat title',
-        introMessage: 'First message when the user opens the chat for the first time',
-        autoResponse: 'A message that is sent immediately after the user sends its first message',
-        autoNoResponse: 'A message that is sent one minute after the user sends its first message ' +
-                        'and no response was received',
-        mainColor: "#E91E63", // Can be any css supported color 'red', 'rgb(255,87,34)', etc
-        alwaysUseFloatingButton: false // Use the mobile floating button also on large screens
-    };
+<script>
+  window.intergramServer = 'https://ваш-сервер.example';
+  window.intergramCustomizations = {
+    titleClosed: 'Чат поддержки',
+    titleOpen: 'Чат с техподдержкой',
+    introMessage: 'Привет! Чем можем помочь?',
+    autoResponse: 'Сообщение доставлено. Ответим в ближайшее время.',
+    autoNoResponse: 'Сейчас мы офлайн. Оставьте вопрос — ответим позже.',
+    placeholderText: 'Напишите сообщение…',
+    mainColor: '#1f8ceb',
+    closedStyle: 'button',
+    desktopWidth: 370,
+    desktopHeight: 450
+  };
 </script>
-<script id="intergram" type="text/javascript" src="https://www.intergram.xyz/js/widget.js"></script>
+<script id="intergram" src="https://ваш-сервер.example/js/widget.js"></script>
 ```
 
-<p align="center"> <img src="docs/hello.jpg"/> </p>
+Если виджет размещён на том же сервере, достаточно указать адрес страницы так:
 
-### Initial Footprint
-  - Using [Preact](https://github.com/developit/preact) helped creating a pretty minimal `js` bundle.
-  - The widget injection script is about 5KB gziped and executes only after the host page finished loading ('onload' event).
-  - The chat iframe will only be loaded if the user interacts with the chat widget (currently about 40KB gziped).
-  
-![](docs/footprint.png)
+```html
+<script>
+  window.intergramServer = window.location.origin;
+</script>
+<script id="intergram" src="/js/widget.js"></script>
+```
 
-### Deploy your own Intergram instance (Self Hosting)
-1. Talk to Telegram [@BotFather](https://telegram.me/botfather), create a new bot and get its API Token.
+Сервер ID чата читает только из переменной `INTERGRAM_CHAT_ID` окружения и отдаёт виджету не секретные настройки через `/config`.
 
-2. Deploy this repo to your own chat server. 
-  - Clone it locally and install or if you use Heroku, fork this repository and point the new app to it.
-  - Set an .env variable named `TELEGRAM_TOKEN` with the value you got from @BotFather
+## Настройка внешнего вида
 
-3. Point the bot webhook to your bot server by making a `GET` request to the following url
-  `https://api.telegram.org/bot<TOKEN>/setWebhook?url=<Server url>/hook`
-  (Don't forget to replace with your token and server url)
+Все параметры необязательны. Не указанные значения берутся из конфигурации проекта:
 
-4. Open a chat with your bot and hit `/start` to get your unique chat ID
+```html
+<script>
+  window.intergramCustomizations = {
+    titleClosed: '',
+    titleOpen: 'Чат с техподдержкой',
+    closedStyle: 'button',
+    introMessage: 'Привет, если есть вопросы, напиши мне.',
+    autoResponse: 'Сообщение доставлено. Постараюсь ответить в ближайшее время.',
+    autoNoResponse: 'Сейчас не могу ответить, отвечу позже.',
+    placeholderText: 'Напишите сообщение…',
+    displayMessageTime: true,
+    mainColor: '#1f8ceb',
+    alwaysUseFloatingButton: false,
+    desktopHeight: 450,
+    desktopWidth: 370,
+    resizable: true
+  };
+</script>
+```
 
-5. Embed this code snippet in your website
-  ```html
-  <script> 
-      window.intergramId = "Your unique chat ID"
-      window.intergramServer = "Server url"
-  </script>
-  <script id="intergram" type="text/javascript" src="<Server url>/js/widget.js"></script>
-  ```
-6. :tada:
+### Основные параметры
+
+- `titleClosed` — заголовок свернутого чата
+- `titleOpen` — заголовок открытого чата
+- `closedStyle` — режим свернутого вида: `button` или `chat`
+- `introMessage` — первое сообщение в окне чата
+- `autoResponse` — ответ сразу после первого сообщения посетителя
+- `autoNoResponse` — ответ, если оператор не ответил вовремя
+- `placeholderText` — текст подсказки поля ввода
+- `displayMessageTime` — показывать ли время сообщений
+- `mainColor` — основной цвет виджета
+- `alwaysUseFloatingButton` — всегда использовать плавающую кнопку вместо заголовка
+- `desktopWidth` и `desktopHeight` — размеры окна на компьютере
+- `resizable` — разрешить ручное изменение размера окна
+
+Параметры задаются до загрузки `widget.js`.
+
+## Ответы оператору из Telegram
+
+1. Получите новое сообщение в настроенном чате Telegram.
+2. Нажмите **Ответить** на конкретное входящее сообщение пользователя.
+3. Введите ответ и отправьте его.
+
+Виджет направит текст только тому посетителю, чей ID указан в начале исходного сообщения.
+
+Сообщение без ответа на конкретное сообщение передаётся всем активным соединениям чата. Нужное поведение зависит от количества одновременно работающих операторов и посетителей.
+
+## Изображения
+
+Поддерживаются JPEG, PNG и WebP до 10 МБ.
+
+- Посетитель загружает изображение через виджет
+- Изображение отправляется в Telegram и сохраняется во временной папке сервера
+- Администратор получает изображение и отвечает в Telegram обычным текстом или фотографией
+- Администраторское изображение сохраняется во временной папке и передаётся посетителю с миниатюрой
+- Файлы старше 24 часов удаляются фоновым процессом очистки
+
+## Публичные и внутренние маршруты
+
+- `GET /` — демонстрационная страница
+- `GET /chat.html` — интерфейс внутреннего iframe чата
+- `GET /config` — публикует настроенный chat ID виджету
+- `POST /hook` — принимает webhook от Telegram
+- `POST /api/send-photo` — принимает изображение посетителя
+- `GET /files/:filename` — отдаёт временное изображение
+- `POST /usage-start` — служебная отметка активации виджета
+
+Секретный Telegram-токен передаётся только на сервере и не попадает в HTML или JavaScript виджета.
+
+## Docker
+
+### Через Docker Compose
+
+Сначала создайте файл `.env` в корне проекта:
+
+```env
+TELEGRAM_TOKEN=1234567890:telegram_bot_token
+INTERGRAM_CHAT_ID=123456789
+PORT=3000
+```
+
+Затем выполните:
+
+```bash
+docker compose up --build
+```
+
+Приложение будет доступно на порту `3000`.
+
+### Через Docker вручную
+
+```bash
+docker build -t intergram-widget .
+docker run --rm -p 3000:3000 --env-file .env intergram-widget
+```
+
+## Проверка проекта
+
+Запустить проверки:
+
+```bash
+npm test
+```
+
+Собрать production-файлы:
+
+```bash
+npm run build
+```
+
+Результат сборки находится в папке `dist`:
+
+```text
+dist/
+  demo.html
+  chat.html
+  css/
+  media/
+  js/widget.js
+  js/chat.js
+```
+
+## Структура проекта
+
+```text
+src/widget/  — интерфейс виджета
+src/chat/    — интерфейс окна чата
+css/         — стили чата
+server.js    — Express, Socket.IO и Telegram API
+webpack.config.js — сборка JavaScript
+media/       — звуки и медиафайлы
+dist/        — собранная production-версия
+```
+
+## Безопасность
+
+- Не публикуйте `TELEGRAM_TOKEN` в браузерном коде
+- Не добавляйте `TELEGRAM_TOKEN` в репозиторий
+- Ограничьте размер загружаемых изображений на прокси при необходимости
+- Используйте HTTPS и валидируйте webhook-запросы с помощью firewall или reverse proxy в production
+- Добавляйте переменные окружения через секреты хостинг-системы вместо файла `.env`, если он попадает в образ контейнера

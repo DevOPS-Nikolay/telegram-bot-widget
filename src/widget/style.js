@@ -1,35 +1,34 @@
-
 export const desktopWrapperStyle = {
     position: 'fixed',
     bottom: '20px',
     right: '20px',
     zIndex: 2147483647,
-    borderRadius: '10px',
-    // background: 'rgb(229, 229, 229)',
-    boxSizing: 'content-box',
-    boxShadow: '0px 0px 60px rgba(0, 0, 0, 0.3)',
-    overflow: 'hidden'
+    borderRadius: '16px',
+    boxSizing: 'border-box',
+    boxShadow: '0 18px 48px rgba(20, 32, 56, 0.22), 0 4px 14px rgba(20, 32, 56, 0.12)',
+    overflow: 'hidden',
+    background: '#fff'
 };
 
 export const desktopClosedWrapperStyleChat = {
     position: 'fixed',
-    bottom: '0px',
-    right: '0px',
+    bottom: '20px',
+    right: '20px',
     zIndex: 2147483647,
     minWidth: '400px',
-    boxSizing: 'content-box',
-    overflow: 'hidden',
+    boxSizing: 'border-box',
+    overflow: 'visible',
     minHeight: '120px'
 };
 
 export const mobileClosedWrapperStyle = {
     position: 'fixed',
-    bottom: 18,
-    right: 18,
+    bottom: 'calc(18px + env(safe-area-inset-bottom, 0px))',
+    right: 'calc(18px + env(safe-area-inset-right, 0px))',
     zIndex: 2147483647,
     borderRadius: '50%',
-    // background: 'rgb(229, 229, 229)',
-    boxSizing: 'content-box'
+    overflow: 'visible',
+    boxSizing: 'border-box'
 };
 
 export const mobileOpenWrapperStyle = {
@@ -40,32 +39,38 @@ export const mobileOpenWrapperStyle = {
     left: 0,
     zIndex: 2147483647,
     width: '100%',
-    height: '100%',
-    // background: 'rgb(229, 229, 229)',
-    overflowY: 'visible',
-    boxSizing: 'content-box'
+    height: '100vh',
+    height: '100dvh',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+    background: '#fff'
 };
 
 export const desktopTitleStyle = {
-    height: '40px',
-    lineHeight: '30px',
-    fontSize: '20px',
+    height: '52px',
+    lineHeight: '52px',
+    fontSize: '16px',
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '5px 0 5px 20px',
-    fontFamily: 'Lato, sans-serif',
+    alignItems: 'center',
+    padding: '0 18px 0 20px',
+    fontFamily: 'Inter, Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     color: '#fff',
     cursor: 'pointer',
+    borderBottom: '1px solid rgba(255,255,255,.14)',
 };
 
 export const mobileTitleStyle = {
-    height: 52,
-    width: 52,
+    height: 56,
+    width: 56,
     cursor: 'pointer',
     borderRadius: '50%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    webkitBoxShadow: '1px 1px 4px rgba(101,119,134,.75)',
-    boxShadow: '1px 1px 4px rgba(101,119,134,.75)'
+    boxShadow: '0 10px 24px rgba(20,32,56,.24), 0 3px 8px rgba(20,32,56,.14)',
+    border: '0',
+    outline: 'none',
+    padding: 0,
+    transition: 'transform 120ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 120ms ease'
 };

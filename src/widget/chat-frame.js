@@ -3,18 +3,21 @@ import { h, Component } from 'preact';
 export default class ChatFrame extends Component {
 
     shouldComponentUpdate() {
-        // do not re-render via diff:
+        // Do not re-render the iframe and reinitialize the chat session.
         return false;
     }
 
-    render({intergramId, host, iFrameSrc, isMobile, conf},{}) {
-        let dynamicConf = window.intergramOnOpen || {}; // these configuration are loaded when the chat frame is opened
+    render({host, iFrameSrc, isMobile, conf},{}) {
+        let dynamicConf = window.intergramOnOpen || {};
         let encodedConf = encodeURIComponent(JSON.stringify({...conf, ...dynamicConf}));
         return (
-            <iframe src={iFrameSrc + '?id=' + intergramId + '&host=' + host + '&conf=' + encodedConf }
-                    width='100%'
-                    height={isMobile ? '94%' : '100%'}
-                    frameborder='0' >
+            <iframe src={iFrameSrc + '?host=' + host + '&conf=' + encodedConf }
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    title="Онлайн-чат"
+                    allow="camera 'none'; microphone 'none'"
+                    style={{display: 'block', width: '100%', height: '100%', border: 0}}>
             </iframe>
         );
     }

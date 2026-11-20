@@ -2,96 +2,93 @@ import { h, Component } from 'preact';
 
 export default class ChatTitleMsg extends Component {
 
-    render({isOpened, conf},{}) {
+    render({conf, unreadCount},{}) {
         return (
-            <div style={{position: 'relative', cursor: 'pointer'}} onClick={this.props.onClick}>
-                <div 
+            <button type="button" aria-label="Открыть чат" style={{position: 'relative', cursor: 'pointer', border: 0, background: 'transparent', padding: 0}} onClick={this.props.onClick}>
+                <div
                     className="desktop-closed-message"
                     style={{
                         background: conf.mainColor,
-                        letterSpacing: '1px',
+                        letterSpacing: '0',
                         color: '#fff',
                         display: 'block',
                         position: 'absolute',
                         fontSize: '14px',
+                        lineHeight: '1.45',
                         top: 0,
                         right: '130px',
                         marginTop: '23px',
-                        borderRadius: '5px',
-                        padding: '15px 20px',
-                        boxShadow: '#8e8d8d -3px 2px 20px',
+                        borderRadius: '12px',
+                        padding: '12px 14px',
+                        maxWidth: '260px',
+                        textAlign: 'left',
+                        boxShadow: '0 12px 30px rgba(20,32,56,.18)',
                     }}
                 >
                     {conf.introMessage}
                     <div
                         style={{
                             width: 0,
-                            height: 0, 
+                            height: 0,
                             position: 'absolute',
-                            top: '12px',
-                            right: '-10px',
-                            borderTop: '10px solid transparent',
-                            borderBottom: '10px solid transparent',
-                            borderLeft: '10px solid '+conf.mainColor
+                            top: '16px',
+                            right: '-9px',
+                            borderTop: '9px solid transparent',
+                            borderBottom: '9px solid transparent',
+                            borderLeft: '9px solid '+conf.mainColor
                         }}
                     />
                 </div>
-                <div 
+                <div
                     className="desktop-closed-message-avatar"
                     style={{
                         background: '#fff',
-                        display: 'block',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         position: 'absolute',
                         top: '10px',
                         right: '40px',
                         height: '60px',
                         width: '60px',
                         borderRadius: '999px',
-                        boxShadow: '#8e8d8d -3px 2px 20px',
-                        border: '2px solid '+conf.mainColor
+                        boxShadow: '0 12px 30px rgba(20,32,56,.18)',
+                        border: '2px solid '+conf.mainColor,
+                        overflow: 'visible'
                     }}
                 >
                     {(conf.closedChatAvatarUrl === '') ?
-                        <svg style={{
-                                width: '100%',
-                                height: 'auto',
-                                borderRadius: '999px'
-                            }}
-                            fill="#000000" height="24" viewBox="0 0 24 24" width="24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 21.859c0 2.281-1.5 4.141-3.328 4.141h-13.344c-1.828 0-3.328-1.859-3.328-4.141 0-4.109 1.016-8.859 5.109-8.859 1.266 1.234 2.984 2 4.891 2s3.625-0.766 4.891-2c4.094 0 5.109 4.75 5.109 8.859zM16 8c0 3.313-2.688 6-6 6s-6-2.688-6-6 2.688-6 6-6 6 2.688 6 6z"></path>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill={conf.mainColor} aria-hidden="true">
+                            <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-9 9c0-4.4 4-7 9-7s9 2.6 9 7v1H3v-1Z"/>
                         </svg>
                         :
-                        <img 
-                            src={conf.closedChatAvatarUrl} 
-                            alt="Avatar"
-                            style={{
-                                width: '100%',
-                                height: 'auto',
-                                borderRadius: '999px'
-                            }}
+                        <img
+                            src={conf.closedChatAvatarUrl}
+                            alt=""
+                            style={{width:'100%', height:'100%', borderRadius:'999px', objectFit:'cover'}}
                         />
                     }
-                    <div
+                    {unreadCount > 0 ? <span
                         style={{
-                            background: '#d0021b',
-                            width: '20px',
+                            background: '#e53935',
+                            minWidth: '20px',
                             height: '20px',
                             borderRadius: '999px',
+                            padding: '0 5px',
                             position: 'absolute',
-                            right: '-5px',
-                            bottom: '-5px',
+                            right: '-6px',
+                            bottom: '-6px',
                             textAlign: 'center',
                             color: '#fff',
-                            fontWeight: 600,
-                            fontSize: '0.8em',
-                            lineHeight: '20px'
+                            fontWeight: 700,
+                            fontSize: '11px',
+                            lineHeight: '20px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,.22)'
                         }}
-                    >
-                        1
-                    </div>
+                        aria-hidden="true"
+                    >{unreadCount > 99 ? '99+' : unreadCount}</span> : ''}
                 </div>
-            </div>
+            </button>
         );
     }
 }

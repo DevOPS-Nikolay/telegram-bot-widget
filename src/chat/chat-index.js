@@ -12,15 +12,49 @@ if (confString) {
     }
 }
 
-render(
-    <Chat
-        chatId={getUrlParameter('id')}
-        userId={getUserId()}
-        host={getUrlParameter('host')}
-        conf={conf}
-    />,
-    document.getElementById('intergramChat')
-);
+const renderChat = (chatId) => {
+    render(
+        <Chat
+            chatId={chatId}
+            userId={getUserId()}
+            host={getUrlParameter('host')}
+            conf={conf}
+        />,
+        document.getElementById('intergramChat')
+    );
+};
+
+const existingChatId = getUrlParameter('id');
+if (existingChatId) {
+    renderChat(existingChatId);
+} else {
+    const request = new XMLHttpRequest();
+    const chatPagePath = window.location.pathname || '';
+    const chatBasePath = chatPagePath.replace(/\/chat\.html$/, '').replace(/\/$/, '');
+    const configUrl = window.location.origin + (chatBasePath || '') + '/config';
+    request.open('GET', configUrl);
+    request.setRequestHeader('Accept', 'application/json');
+    request.onreadystatechange = function() {
+        if (request.readyState !== 4) {
+            return;
+        }
+
+        if (request.status >= 200 && request.status < 300) {
+            try {
+                const payload = JSON.parse(request.responseText);
+                if (payload && payload.chatId) {
+                    renderChat(payload.chatId);
+                    return;
+                }
+            } catch (e) {
+                console.error('Failed to parse Intergram chat config', e);
+            }
+        }
+
+        console.error('Unable to load the backend chat configuration.');
+    };
+    request.send();
+}
 
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
